@@ -1,5 +1,5 @@
 type Message = {
-    role: string;
+    role: 'user' | 'model';
     content: string;
 };
 

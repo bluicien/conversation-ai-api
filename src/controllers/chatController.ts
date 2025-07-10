@@ -11,10 +11,11 @@ export const chatWithGemini = async (req: Request, res: Response) => {
 
     try {
         const aiResponse = await sendGeminiMessage(history);
-        res.status(200).json({ test: aiResponse });
+        res.status(200).json(aiResponse);
         return 
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: "Internal Server Error" });
+        return;
     }
 }
