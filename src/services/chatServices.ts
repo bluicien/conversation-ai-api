@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
-import { GoogleGenAI, HarmCategory, HarmBlockThreshold, Content } from "@google/genai";
-import { ChatHistory } from '../models/chat'; // Corrected: Changed => to from
+import { GoogleGenAI, HarmCategory, HarmBlockThreshold, Content, Chat } from "@google/genai";
+import { ChatHistory, Message } from '../models/chat'; // Corrected: Changed => to from
 import * as fs from 'fs/promises'; // For file system operations
 import * as path from 'path'; // For path manipulation
 import pdf from 'pdf-parse'; // For parsing PDF files
@@ -261,7 +261,10 @@ export const sendGeminiMessage = async (history: ChatHistory) => {
 
         const newChatHistory = chatSession.getHistory(); 
 
-        return { reply, newChatHistory };
+        if (!reply || newChatHistory.length === 0)
+            throw new Error("Failed to get response from AI");
+
+        return { reply: formatPartsToMessage(reply), newChatHistory: formatPartsToMessage(newChatHistory).slice(3) };
 
     } catch (error) {
         console.error("Error connecting with Gemini:", error);
@@ -298,3 +301,21 @@ function createGeminiHistoryParts(messageHistory: ChatHistory): Content[] {
     return historyParts;
 }
 
+function formatPartsToMessage (messageContent: Content[] | string): ChatHistory {
+    if (typeof messageContent === "string") {
+        return [{
+            role: "model",
+            content: messageContent
+        }];
+    } 
+    else {
+        const formattedMessageArray: ChatHistory = messageContent.map((message: Content) => {
+            return {
+                role: (message.role === "user" || message.role === "model") ? message.role : "model",
+                content: message.parts && message.parts[0] && typeof message.parts[0].text === "string" ? message.parts[0].text : ""
+            }
+        });
+
+        return formattedMessageArray;
+    }
+}
