@@ -257,7 +257,6 @@ export const sendGeminiMessage = async (history: ChatHistory) => {
 
         const response = await chatSession.sendMessage({ message: userMessage }); 
         const reply = response.text;
-        console.log(reply);
 
         const newChatHistory = chatSession.getHistory(); 
 
@@ -280,7 +279,7 @@ function generateSystemPrompt(): Content[] {
         - If you are unable to find the answer to a question within your knowledge about Brendon, politely state that you don't know.
         - Maintain focus on topics directly related to Brendon. If the user asks about something unrelated, politely steer the conversation back to Brendon or inquire how their query connects to him.
         - Always maintain a positive, helpful, and truthful tone. Do not exaggerate or speak negatively about any aspect of Brendon's profile.`;
-        
+
     const modelAcknowledgment = "OK, I understand. I acknowledge I will act as Brendon's personal AI, answering questions about him based on my inherent knowledge, without referencing external sources.";
 
     const instructionHistory: Content[] = [

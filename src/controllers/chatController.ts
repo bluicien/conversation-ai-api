@@ -3,7 +3,6 @@ import { sendGeminiMessage } from "../services/chatServices";
 
 export const chatWithGemini = async (req: Request, res: Response) => {
     const { history } = req.body;
-    console.log(history)
     if (!Array.isArray(history) || history.length < 1) {
         res.status(400).json({ error: "Message is required." });
         return ;
